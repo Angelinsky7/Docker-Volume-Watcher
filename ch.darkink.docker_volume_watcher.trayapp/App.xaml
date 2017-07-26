@@ -1,0 +1,9 @@
+﻿<Application x:Class="ch.darkink.docker_volume_watcher.trayapp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ch.darkink.docker_volume_watcher.trayapp"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary Source="/ch.darkink.docker_volume_watcher.trayapp;component/Notify/NotifyIconView.xaml" />
+    </Application.Resources>
+</Application>
