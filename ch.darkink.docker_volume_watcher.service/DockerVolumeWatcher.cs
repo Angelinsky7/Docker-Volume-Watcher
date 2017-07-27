@@ -18,10 +18,14 @@ namespace ch.darkink.docker_volume_watcher {
         }
 
         protected override void OnStart(string[] args) {
-            eventLog.WriteEntry($"Service starting - v{typeof(DockerVolumeWatcher).Assembly.GetName().Version}", EventLogEntryType.Information);
+            eventLog.WriteEntry($"Service starting - v{typeof(DockerVolumeWatcher).Assembly.GetName().Version}, with polling interval as {args[0]}ms", EventLogEntryType.Information);
 
-            m_Monitor = new DockerMonitor();
-            m_Monitor.Start();
+            try {
+                m_Monitor = new DockerMonitor(eventLog, Int32.Parse(args[0]));
+                m_Monitor.Start();
+            } catch (Exception ex) {
+                eventLog.WriteEntry($"Cannot start service : {ex.Message}", EventLogEntryType.Error);
+            }
         }
 
         protected override void OnStop() {

@@ -18,73 +18,44 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class SettingsWindowViewModel : BindableBase, IPartImportsSatisfiedNotification {
 
-        private const String REGISTRY_RUN = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
-        
         [Import]
         public ServiceMonitor ServiceMonitor { get; set; }
         [Import]
-        public UpdateMonitor UpdateMonitor { get; set;}
+        public UpdateMonitor UpdateMonitor { get; set; }
+        [Import]
+        public RegistryService RegistryService { get; set; }
 
         public Nullable<Boolean> IsServiceRunning { get; private set; }
         public String ServiceState { get; private set; }
-        public Boolean IsStartAutoService { get; set; }
-        public Boolean IsCheckAuto { get; set; }
         public Boolean IsLoading { get { return IsServiceRunning ?? false; } }
-
+      
+        public DelegateCommand ApplyCommand { get; private set; }
         public DelegateCommand ResetCommand { get; private set; }
 
+        public Boolean IsStartAutoService {
+            get { return RegistryService?.IsStartAutoService ?? false; }
+            set { RegistryService.IsStartAutoService = value; }
+        }
+        public Boolean IsCheckAuto {
+            get { return RegistryService?.CheckAuto ?? false; }
+            set {
+                RegistryService.CheckAuto = value;
+                UpdateMonitor.CheckAutoHasChanged(value);
+            }
+        }
+        public Int32 PollingInterval {
+            get { return RegistryService?.PollInterval ?? 500; }
+            set { RegistryService.PollInterval = value; }
+        }
+
         public SettingsWindowViewModel() {
-            PropertyChanged += SettingsWindowViewModel_PropertyChanged;
+            //PropertyChanged += SettingsWindowViewModel_PropertyChanged;
             WireCommands();
         }
 
-        private void SettingsWindowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(IsStartAutoService):
-                    UpdateAuoStartKeyRegistry();
-                    break;
-                case nameof(IsCheckAuto):
-                    UpdateCheckAutoKeyRegistry();
-                    break;
-            }
-        }
-
-        #region AutoStart
-
-        private Boolean IsAutoStartKeyRegistered() {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_RUN, true);
-            Assembly curAssembly = Assembly.GetExecutingAssembly();
-            String assemlyTitle = curAssembly.GetCustomAttribute<AssemblyTitleAttribute>().Title;
-            return key.GetValue(assemlyTitle) != null;
-        }
-
-        private void UpdateAuoStartKeyRegistry() {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_RUN, true);
-            Assembly curAssembly = Assembly.GetExecutingAssembly();
-            String assemlyTitle = curAssembly.GetCustomAttribute<AssemblyTitleAttribute>().Title;
-            if (IsStartAutoService) {
-                key.SetValue(assemlyTitle, $"\"{curAssembly.Location}\"");
-            } else {
-                key.DeleteValue(assemlyTitle);
-            }
-        }
-
-        #endregion
-
-        #region CheckAuto
-
-        private Boolean GetCheckAutoKeyRegistered() {
-            return UpdateMonitor.GetCheckAutoKeyRegistered();
-        }
-
-        private void UpdateCheckAutoKeyRegistry() {
-            UpdateMonitor.UpdateCheckAutoKeyRegistry(IsCheckAuto);
-        }
-
-        #endregion
-
         private void WireCommands() {
             ResetCommand = new DelegateCommand(OnResetCommand);
+            ApplyCommand = new DelegateCommand(OnApplyCommand);
         }
 
         #region ResetCommand
@@ -98,14 +69,27 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
 
         #endregion
 
-        public void OnImportsSatisfied() {
-            IsStartAutoService = IsAutoStartKeyRegistered();
-            IsCheckAuto = GetCheckAutoKeyRegistered();
+        #region ApplyCommand
 
+        private void OnApplyCommand() {
+            RefreshProperties();
+            ResetCommand.Execute();
+        }
+
+        #endregion
+
+        public void OnImportsSatisfied() {
+            RefreshProperties();
             IsServiceRunning = ServiceMonitor.Status;
             ServiceState = ServiceMonitor.OperationAsString;
             ServiceMonitor.PropertyChanged += ServiceMonitor_PropertyChanged;
             RaisePropertyChanged(nameof(IsLoading));
+        }
+
+        private void RefreshProperties() {
+            RaisePropertyChanged(nameof(IsStartAutoService));
+            RaisePropertyChanged(nameof(IsCheckAuto));
+            RaisePropertyChanged(nameof(PollingInterval));
         }
 
         private void ServiceMonitor_PropertyChanged(object sender, PropertyChangedEventArgs e) {

@@ -18,13 +18,12 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
     [Export]
     public class UpdateMonitor : BindableBase {
 
+        [Import]
+        public RegistryService RegistryService { get; set; }
+
         private const String UPDATE_URL = "https://raw.githubusercontent.com/Angelinsky7/Docker-Volume-Watcher/master/version?dummy={0}";
         private const String NEWFILE_URL_FORMAT = "https://github.com/Angelinsky7/Docker-Volume-Watcher/releases/download/{0}/ch.darkink.docker_volume_watcher.msi";
         private const Double POLLING_INTERVAL = 3600000;
-
-        private const String REGISTRY_SETTINGS = "SOFTWARE\\Darkink\\ch.darkink.docker_volume_watcher\\Settings";
-        private const String REGISTRY_SETTINGS_CHECKUPDATE = "CheckUpdateAutomatically";
-
         private Random m_Rnd;
         private Timer m_Timer;
         private Boolean m_InCheckUpdate;
@@ -48,7 +47,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
         }
 
         public void Start() {
-            if (GetCheckAutoKeyRegistered()) { StartPolling(); }
+            if (RegistryService.CheckAuto) { StartPolling(); }
         }
 
         public void RestartApplicationAndInstall(Version version) {
@@ -67,15 +66,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
             }
         }
 
-        public Boolean GetCheckAutoKeyRegistered() {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_SETTINGS, true);
-            return (Int32)key.GetValue(REGISTRY_SETTINGS_CHECKUPDATE, 0) != 0;
-        }
-
-        public void UpdateCheckAutoKeyRegistry(Boolean newValue) {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_SETTINGS, true);
-            key.SetValue(REGISTRY_SETTINGS_CHECKUPDATE, newValue ? 1 : 0);
-
+        public void CheckAutoHasChanged(Boolean newValue) {
             if (newValue) {
                 StartPolling();
             } else {
@@ -152,7 +143,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
                 m_InCheckUpdate = true;
                 try {
                     System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(() => {
-                        NotifyCommandManager.CheckUpdate.Execute(false);
+                        NotifyCommandManager.CheckUpdate.Execute(new UpdateConfigCheck());
                     }));
                     thread.SetApartmentState(System.Threading.ApartmentState.STA);
                     thread.Start();

@@ -80,6 +80,15 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        internal static string ApplyLabel {
+            get {
+                return ResourceManager.GetString("ApplyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Channel.
         /// </summary>
         internal static string ChannelLabel {
@@ -135,6 +144,15 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Is the service polling enabled.
+        /// </summary>
+        internal static string IsPollingEnabledLabel {
+            get {
+                return ResourceManager.GetString("IsPollingEnabledLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A new version has been found.
         ///Would you like to download it and install it ?.
         /// </summary>
@@ -150,6 +168,24 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Properties {
         internal static string NewVersionTitle {
             get {
                 return ResourceManager.GetString("NewVersionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Polling interval in millisecond.
+        /// </summary>
+        internal static string PollingIntervalLabel {
+            get {
+                return ResourceManager.GetString("PollingIntervalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Propriétés.
+        /// </summary>
+        internal static string PropertiesLabel {
+            get {
+                return ResourceManager.GetString("PropertiesLabel", resourceCulture);
             }
         }
         

@@ -30,7 +30,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Notify {
 
         public static DelegateCommand About { get; private set; }
         public static DelegateCommand Settings { get; private set; }
-        public static DelegateCommand<Boolean?> CheckUpdate { get; private set; }
+        public static DelegateCommand<UpdateConfigCheck> CheckUpdate { get; private set; }
         public static DelegateCommand Quit { get; private set; }
 
         static NotifyCommandManager() {
@@ -40,7 +40,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Notify {
         private static void WireCommands() {
             About = new DelegateCommand(OnAbout);
             Settings = new DelegateCommand(OnSettings);
-            CheckUpdate = new DelegateCommand<Boolean?>(OnCheckUpdate);
+            CheckUpdate = new DelegateCommand<UpdateConfigCheck>(OnCheckUpdate);
             Quit = new DelegateCommand(OnQuit);
         }
 
@@ -67,13 +67,13 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Notify {
             settings.Show();
         }
 
-        private static void OnCheckUpdate(Boolean? sendMessage) {
-            Boolean sm = sendMessage ?? true;
+        private static void OnCheckUpdate(UpdateConfigCheck sendMessageOption) {
+            UpdateConfigCheck options = sendMessageOption ?? new UpdateConfigCheck { ShowMessage = true, ShowTooltip = true };
 
             UpdateMonitor update = ServiceLocator.Current.GetInstance<UpdateMonitor>();
             Tuple<Boolean, String, Version> result = update.CheckVersion(typeof(NotifyCommandManager).Assembly.GetName().Version);
             if (result.Item1) {
-                if (sm) {
+                if (options.ShowMessage) {
                     MessageBoxResult r = MessageBoxResult.None;
                     using (DummyWindowIntance dummy = DummyWindow.Create()) {
                         r = MessageBox.Show(dummy, Loc.Get<String>("NewVersionText"), Loc.Get<String>("NewVersionTitle"), MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -90,11 +90,11 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Notify {
                 if (String.IsNullOrEmpty(result.Item2)) {
                     ServiceLocator.Current.GetInstance<NotifyIconViewModel>().ShowBalloonTip(Loc.Get<String>("NewVersionTitle"), Loc.Get<String>("UpToDateText"), BalloonIcon.Info);
                 } else {
-                    if (sm) {
+                    if (options.ShowMessage) {
                         using (DummyWindowIntance dummy = DummyWindow.Create()) {
                             MessageBox.Show(dummy, result.Item2, Loc.Get<String>("NewVersionTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                         }
-                    } else {
+                    } else if (options.ShowTooltip) {
                         ServiceLocator.Current.GetInstance<NotifyIconViewModel>().ShowBalloonTip(Loc.Get<String>("NewVersionTitle"), result.Item2, BalloonIcon.Info);
                     }
                 }

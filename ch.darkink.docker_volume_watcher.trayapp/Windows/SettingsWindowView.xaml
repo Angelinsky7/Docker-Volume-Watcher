@@ -39,9 +39,29 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <!--<TabItem Header="{lex:Loc GeneralLabel}">
+                <TabItem Header="{lex:Loc PropertiesLabel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                </TabItem>-->
+                        <StackPanel>
+                            <TextBlock Text="{lex:Loc PropertiesLabel}" FontSize="22" FontWeight="Bold" />
+
+                            <!--<CheckBox IsChecked="{Binding IsPollingEnabled}" Margin="10,30,0,0" Content="{lex:Loc IsPollingEnabledLabel}" />-->
+                            <StackPanel Orientation="Horizontal" Margin="10,30,0,0">
+                                <Label Content="{lex:Loc PollingIntervalLabel}" />
+                                <TextBox Text="{Binding PollingInterval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="10,0,0,0" Width="100" IsEnabled="{Binding IsPollingEnabled}" />
+                            </StackPanel>
+                            
+                        </StackPanel>
+
+                        <Button Command="{Binding ApplyCommand}" Content="{lex:Loc ApplyLabel}"
+                                Margin="20" Height="30" Width="125" HorizontalAlignment="Right" Grid.Row="1" >
+                        </Button>
+                    </Grid>
+                </TabItem>
                 <TabItem Header="{lex:Loc ResetLabel}">
                     <StackPanel>
                         <TextBlock Text="{lex:Loc ResetLabel}" FontSize="22" FontWeight="Bold" />

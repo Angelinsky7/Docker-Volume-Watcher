@@ -206,4 +206,16 @@ Would you like to download it and install it ?</value>
   <data name="UpToDateText" xml:space="preserve">
     <value>Your version is up to date !</value>
   </data>
+  <data name="PropertiesLabel" xml:space="preserve">
+    <value>Propriétés</value>
+  </data>
+  <data name="ApplyLabel" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="IsPollingEnabledLabel" xml:space="preserve">
+    <value>Is the service polling enabled</value>
+  </data>
+  <data name="PollingIntervalLabel" xml:space="preserve">
+    <value>Polling interval in millisecond</value>
+  </data>
 </root>

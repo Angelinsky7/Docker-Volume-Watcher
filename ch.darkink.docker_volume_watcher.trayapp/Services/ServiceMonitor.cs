@@ -15,6 +15,9 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
     [Export]
     public class ServiceMonitor : BindableBase {
 
+        [Import]
+        public RegistryService RegistryService { get; set; }
+
         public const String SERVICENAME = "Docker Volume Watcher";
 
         [AlsoNotifyFor(nameof(OperationAsString))]
@@ -83,7 +86,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
             if (!IsServiceValid) { return; }
 
             if (Status != true) {
-                m_ServiceMonitor.Start();
+                m_ServiceMonitor.Start(new String[] { RegistryService.PollInterval.ToString() });
                 Operation = ServiceMonitorOperation.Starting;
                 try {
                     m_ServiceMonitor.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));

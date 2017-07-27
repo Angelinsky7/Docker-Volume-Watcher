@@ -105,8 +105,10 @@
     <Compile Include="Prism\Bootstrap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\ITaskTrayService.cs" />
+    <Compile Include="Services\RegistryService.cs" />
     <Compile Include="Services\ServiceMonitor.cs" />
     <Compile Include="Services\ServiceMonitorOperation.cs" />
+    <Compile Include="Services\UpdateConfigCheck.cs" />
     <Compile Include="Services\UpdateMonitor.cs" />
     <Compile Include="Windows\AboutWindowView.xaml.cs">
       <DependentUpon>AboutWindowView.xaml</DependentUpon>
@@ -136,19 +138,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windows\AboutWindowViewModel.cs" />
-    <Compile Include="Windows\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Page Include="Notify\NotifyIconView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

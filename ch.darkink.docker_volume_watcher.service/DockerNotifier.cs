@@ -8,6 +8,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Docker.DotNet;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ch.darkink.docker_volume_watcher {
     public class DockerNotifier {
@@ -19,8 +20,9 @@ namespace ch.darkink.docker_volume_watcher {
         private FileSystemWatcher m_Watcher;
         private Boolean m_IsDirectory;
         private Action<DockerNotifier> m_ReleaseNotifier;
+        private EventLog m_Log;
 
-        public DockerNotifier(String container, String hostDirectory, String destination, Action<DockerNotifier> releaseNotifier) {
+        public DockerNotifier(String container, String hostDirectory, String destination, Action<DockerNotifier> releaseNotifier, EventLog log) {
             if (String.IsNullOrEmpty(hostDirectory)) { throw new ArgumentNullException("hostDirectory"); }
             if (String.IsNullOrEmpty(destination)) { throw new ArgumentNullException("destination"); }
 
@@ -28,6 +30,7 @@ namespace ch.darkink.docker_volume_watcher {
             m_HostDirectory = hostDirectory;
             m_Destination = destination;
             m_ReleaseNotifier = releaseNotifier;
+            m_Log = log;
 
             WatchDirectory();
         }
@@ -38,6 +41,7 @@ namespace ch.darkink.docker_volume_watcher {
             } else if (File.Exists(m_HostDirectory)) {
                 m_IsDirectory = false;
             } else {
+                LogMessage("HostDirectory is not a valid file or directory");
                 throw new ArgumentException("HostDirectory is not a valid file or directory");
             }
             if (m_IsDirectory) {
@@ -53,7 +57,7 @@ namespace ch.darkink.docker_volume_watcher {
             m_Watcher.Changed += M_Watcher_Changed;
             m_Watcher.EnableRaisingEvents = true;
 
-            Console.WriteLine($"Watcher create for {m_HostDirectory}");
+            LogMessage($"Watcher create for {m_HostDirectory}");
         }
 
         private async Task Notify(String pathChanged) {
@@ -85,7 +89,7 @@ namespace ch.darkink.docker_volume_watcher {
         }
 
         private void M_Watcher_Changed(object sender, FileSystemEventArgs e) {
-            Console.WriteLine($"File has changed : {e.ChangeType} - {e.FullPath} - {e.Name}");
+            LogMessage($"File has changed : {e.ChangeType} - {e.FullPath} - {e.Name}");
 
             Notify(e.FullPath).ContinueWith((t) => {
                 if (t.Exception != null && t.Exception.InnerException is DockerContainerNotFoundException) {
@@ -107,5 +111,11 @@ namespace ch.darkink.docker_volume_watcher {
                 m_Watcher = null;
             }
         }
+
+        private void LogMessage(String message) {
+            if (Console.IsOutputRedirected) { Console.WriteLine(message); }
+            m_Log?.WriteEntry(message, EventLogEntryType.Information);
+        }
+
     }
 }
