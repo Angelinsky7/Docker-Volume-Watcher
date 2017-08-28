@@ -9,7 +9,8 @@ When the file changes, the service send a custom exec command to each container 
 
 ## .dvwignore file
 if you add a .dvwignore file at the root of the host volume you can now ignore some files
-for now, the syntax is :
+
+the syntax is :
 
 ```
 ## Ignore Docker volume Watcher
