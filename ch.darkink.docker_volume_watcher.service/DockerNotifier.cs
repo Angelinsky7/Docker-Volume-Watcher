@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Docker.DotNet;
 using System.Threading;
 using System.Diagnostics;
+using ch.darkink.docker_volume_watcher.service;
 
 namespace ch.darkink.docker_volume_watcher {
     public class DockerNotifier {
@@ -16,11 +17,14 @@ namespace ch.darkink.docker_volume_watcher {
         private String m_Container;
         private String m_HostDirectory;
         private String m_Destination;
+        private String m_IgnoreFile;
 
         private FileSystemWatcher m_Watcher;
         private Boolean m_IsDirectory;
         private Action<DockerNotifier> m_ReleaseNotifier;
         private EventLog m_Log;
+
+        private IEnumerable<IgnorePathItem> m_IgnoreRules;
 
         public DockerNotifier(String container, String hostDirectory, String destination, Action<DockerNotifier> releaseNotifier, EventLog log) {
             if (String.IsNullOrEmpty(hostDirectory)) { throw new ArgumentNullException("hostDirectory"); }
@@ -32,7 +36,49 @@ namespace ch.darkink.docker_volume_watcher {
             m_ReleaseNotifier = releaseNotifier;
             m_Log = log;
 
+            ComputeIgnoreFile();
             WatchDirectory();
+        }
+
+        private void ComputeIgnoreFile() {
+            if (Directory.Exists(m_HostDirectory)) {
+                m_IgnoreFile = Path.Combine(m_HostDirectory, ".dvwignore");
+            }
+
+            FileInfo fileInfo = new FileInfo(m_IgnoreFile);
+            if (fileInfo.Exists) {
+                List<IgnorePathItem> tests = new List<IgnorePathItem>();
+                String[] lines = File.ReadAllLines(fileInfo.FullName);
+                foreach (String line in lines) {
+                    if (line.StartsWith("#") || String.IsNullOrEmpty(line.Trim())) { continue; }
+
+                    String test = line;
+                    IgnorePathItemType type;
+                    Object custom = null;
+                    if (line.StartsWith("*")) {
+                        type = IgnorePathItemType.EndWith;
+                        test = test.Replace("*", String.Empty);
+                    } else if (line.EndsWith("*")) {
+                        type = IgnorePathItemType.StartWith;
+                        test = test.Replace("*", String.Empty);
+                    } else {
+                        type = IgnorePathItemType.Regex;
+                        String regexPattern = line;
+                        Int32 indexOfStar = regexPattern.IndexOf("*");
+                        Char nextCharAfterStart = regexPattern[indexOfStar + 1];
+                        regexPattern = regexPattern.Replace("*", $"[^{nextCharAfterStart}]+");
+                        regexPattern = regexPattern.Replace("/", "\\/");
+                        regexPattern = regexPattern.Replace(".", "\\.");
+                        custom = new Regex(regexPattern);
+                    }
+                    tests.Add(new IgnorePathItem {
+                        Test = test,
+                        Type = type,
+                        Custom = custom
+                    });
+                }
+                m_IgnoreRules = tests;
+            }
         }
 
         private void WatchDirectory() {
@@ -61,6 +107,10 @@ namespace ch.darkink.docker_volume_watcher {
         }
 
         private async Task Notify(String pathChanged) {
+            if (IsInIgnorePath(pathChanged)) {
+                LogMessage($"CheckPath {pathChanged} was excluded because of the ignore file");
+                return;
+            }
 
             var echo = Encoding.UTF8.GetBytes("ls -al");
 
@@ -80,7 +130,27 @@ namespace ch.darkink.docker_volume_watcher {
 
                 using (var stream = await client.Containers.StartAndAttachContainerExecAsync(response.ID, false, default(CancellationToken))) { }
 
+                LogMessage($"Notify {pathChanged} mapped tp {dockerPath} has changed into {m_Container}");
             }
+        }
+
+        private bool IsInIgnorePath(String pathChanged) {
+            if (m_IgnoreRules == null) { return false; }
+            String relativePath = pathChanged.Replace(m_HostDirectory, "").Replace("\\", "/").Substring(1);
+            foreach (IgnorePathItem test in m_IgnoreRules) {
+                switch (test.Type) {
+                    case IgnorePathItemType.StartWith:
+                        if (relativePath.StartsWith(test.Test)) { return true; }
+                        break;
+                    case IgnorePathItemType.EndWith:
+                        if (relativePath.EndsWith(test.Test)) { return true; }
+                        break;
+                    case IgnorePathItemType.Regex:
+                        if (((Regex)test.Custom).IsMatch(relativePath)) { return true; }
+                        break;
+                }
+            }
+            return false;
         }
 
         private String GetDockerDirectory(String source) {

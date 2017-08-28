@@ -38,7 +38,7 @@ namespace ch.darkink.docker_volume_watcher.service_install {
             internal static extern bool SetServiceObjectSecurity(SafeHandle serviceHandle, System.Security.AccessControl.SecurityInfos secInfos, byte[] lpSecDesrBuf);
 
             #endregion
-
+            
         }
 
         /// <summary>

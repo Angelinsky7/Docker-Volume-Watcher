@@ -88,7 +88,7 @@
       <Component Id="RegistryEntries" Guid="{2A37131E-4648-4766-91E4-E2956F3444E6}">
         <RegistryKey Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings">
           <RegistryValue Name="IsPollEnabled" Type="integer" Value="1" />
-          <RegistryValue Name="PollInterval" Type="integer" Value="500" />
+          <RegistryValue Name="PollInterval" Type="integer" Value="1000" />
           <RegistryValue Name="CheckUpdateAutomatically" Type="integer" Value="1" />
         </RegistryKey>
       </Component>

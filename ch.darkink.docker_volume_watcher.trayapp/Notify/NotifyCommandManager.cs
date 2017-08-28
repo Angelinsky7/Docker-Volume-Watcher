@@ -88,7 +88,9 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Notify {
                 }
             } else {
                 if (String.IsNullOrEmpty(result.Item2)) {
-                    ServiceLocator.Current.GetInstance<NotifyIconViewModel>().ShowBalloonTip(Loc.Get<String>("NewVersionTitle"), Loc.Get<String>("UpToDateText"), BalloonIcon.Info);
+                    if (options.ShowTooltip) {
+                        ServiceLocator.Current.GetInstance<NotifyIconViewModel>().ShowBalloonTip(Loc.Get<String>("NewVersionTitle"), Loc.Get<String>("UpToDateText"), BalloonIcon.Info);
+                    }
                 } else {
                     if (options.ShowMessage) {
                         using (DummyWindowIntance dummy = DummyWindow.Create()) {

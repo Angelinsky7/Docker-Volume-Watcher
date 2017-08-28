@@ -44,7 +44,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
             }
         }
         public Int32 PollingInterval {
-            get { return RegistryService?.PollInterval ?? 500; }
+            get { return RegistryService?.PollInterval ?? 1000; }
             set { RegistryService.PollInterval = value; }
         }
 

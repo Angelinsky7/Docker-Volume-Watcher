@@ -19,7 +19,7 @@ namespace ch.darkink.docker_volume_watcher {
         private static readonly Regex m_SourceToHostPath = new Regex("^/([a-zA-Z])/(.*)$", RegexOptions.Compiled);
         private Dictionary<String, IList<DockerNotifier>> m_ContainerNotifier;
         private Timer m_Timer;
-        private static readonly Object m_Lock = new Object();
+        //private static readonly Object m_Lock = new Object();
         private EventLog m_Log;
         private Int32 m_PollingInterval;
         private Int32 m_OldPollingInterval;
@@ -55,45 +55,45 @@ namespace ch.darkink.docker_volume_watcher {
         }
 
         private void M_Timer_Elapsed(object sender, ElapsedEventArgs e) {
-            lock (m_Lock) {
-                IList<ContainerListResponse> newContainers = FindContainer();
-                if (newContainers != null) {
-                    foreach (var item in m_ContainerNotifier.ToList()) {
-                        if (newContainers.Count(p => p.ID == item.Key) == 0) {
-                            foreach (DockerNotifier notifier in item.Value.ToList()) {
-                                notifier.Release();
-                            }
-                            item.Value.Clear();
-                            m_ContainerNotifier.Remove(item.Key);
-                            LogMessage($"Remove container {item.Key}");
+            //lock (m_Lock) {
+            IList<ContainerListResponse> newContainers = FindContainer();
+            if (newContainers != null) {
+                foreach (var item in m_ContainerNotifier.ToList()) {
+                    if (newContainers.Count(p => p.ID == item.Key) == 0) {
+                        foreach (DockerNotifier notifier in item.Value.ToList()) {
+                            notifier.Release();
                         }
-                    }
-                    foreach (ContainerListResponse newContainer in newContainers.Where(p => p.State == CONTAINER_STATE_RUNNING)) {
-                        if (!m_ContainerNotifier.ContainsKey(newContainer.ID)) {
-                            m_ContainerNotifier.Add(newContainer.ID, WatchContainer(newContainer));
-
-                            LogMessage($"Add container {newContainer.ID} : {m_ContainerNotifier[newContainer.ID].Count()} notifier(s)");
-                        }
+                        item.Value.Clear();
+                        m_ContainerNotifier.Remove(item.Key);
+                        LogMessage($"Remove container {item.Key}");
                     }
                 }
-                if (m_DockerPollingErrorCount > 100) {
-                    m_DockerPollingErrorCount = 0;
-                    if (m_OldPollingInterval == -1) {
-                        m_OldPollingInterval = m_PollingInterval;
+                foreach (ContainerListResponse newContainer in newContainers.Where(p => p.State == CONTAINER_STATE_RUNNING)) {
+                    if (!m_ContainerNotifier.ContainsKey(newContainer.ID)) {
+                        m_ContainerNotifier.Add(newContainer.ID, WatchContainer(newContainer));
+
+                        LogMessage($"Add container {newContainer.ID} : {m_ContainerNotifier[newContainer.ID].Count()} notifier(s)");
                     }
-                    m_PollingInterval *= 10;
-                    LogMessage($"Too many errors from the docker daemon, changing the poll interval to {m_PollingInterval}ms");
-                    Stop();
-                    Start();
-                } else if (newContainers != null && m_OldPollingInterval != -1) {
-                    m_DockerPollingErrorCount = 0;
-                    m_PollingInterval = m_OldPollingInterval;
-                    m_OldPollingInterval = -1;
-                    LogMessage($"Ok, docker daemon is back, reverting the poll interval to {m_PollingInterval}ms");
-                    Stop();
-                    Start();
                 }
             }
+            if (m_DockerPollingErrorCount > 100) {
+                m_DockerPollingErrorCount = 0;
+                if (m_OldPollingInterval == -1) {
+                    m_OldPollingInterval = m_PollingInterval;
+                }
+                m_PollingInterval *= 10;
+                LogMessage($"Too many errors from the docker daemon, changing the poll interval to {m_PollingInterval}ms");
+                Stop();
+                Start();
+            } else if (newContainers != null && m_OldPollingInterval != -1) {
+                m_DockerPollingErrorCount = 0;
+                m_PollingInterval = m_OldPollingInterval;
+                m_OldPollingInterval = -1;
+                LogMessage($"Ok, docker daemon is back, reverting the poll interval to {m_PollingInterval}ms");
+                Stop();
+                Start();
+            }
+            //}
         }
 
         private IList<ContainerListResponse> FindContainer() {
