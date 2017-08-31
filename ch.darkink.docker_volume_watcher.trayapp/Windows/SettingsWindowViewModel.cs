@@ -48,6 +48,11 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
             set { RegistryService.PollInterval = value; }
         }
 
+        public Boolean IsIgnoreFileMandatory {
+            get { return RegistryService?.IsIgnoreFileMandatory ?? false; }
+            set { RegistryService.IsIgnoreFileMandatory = value; }
+        }
+
         public SettingsWindowViewModel() {
             //PropertyChanged += SettingsWindowViewModel_PropertyChanged;
             WireCommands();
@@ -90,6 +95,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
             RaisePropertyChanged(nameof(IsStartAutoService));
             RaisePropertyChanged(nameof(IsCheckAuto));
             RaisePropertyChanged(nameof(PollingInterval));
+            RaisePropertyChanged(nameof(IsIgnoreFileMandatory));
         }
 
         private void ServiceMonitor_PropertyChanged(object sender, PropertyChangedEventArgs e) {

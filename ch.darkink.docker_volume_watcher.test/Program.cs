@@ -14,7 +14,7 @@ namespace ch.darkink.docker_volume_watcher.test {
             DockerMonitor monitor = null;
           
             try {
-                monitor = new DockerMonitor(null, 500);
+                monitor = new DockerMonitor(null, 500, true);
                 monitor.Start();
             } catch (Exception ex) {
                 Console.WriteLine(ex.Message);

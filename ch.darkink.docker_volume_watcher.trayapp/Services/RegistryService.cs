@@ -16,6 +16,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
         private const String REGISTRY_SETTINGS = "SOFTWARE\\Darkink\\ch.darkink.docker_volume_watcher\\Settings";
         private const String REGISTRY_SETTINGS_CHECKUPDATE = "CheckUpdateAutomatically";
         private const String REGISTRY_SETTINGS_POLLINTERVAL = "PollInterval";
+        private const String REGISTRY_SETTINGS_IGNOREFILE_MANDATORY = "IngoreFileMandatory";
 
         private String AssemblyTitle {
             get {
@@ -50,11 +51,16 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
             set { SetValueToRegistry(REGISTRY_SETTINGS_POLLINTERVAL, value); }
         }
 
+        public Boolean IsIgnoreFileMandatory {
+            get { return GetValueFromRegistry(REGISTRY_SETTINGS_IGNOREFILE_MANDATORY, 0) != 0; }
+            set { SetValueToRegistry(REGISTRY_SETTINGS_IGNOREFILE_MANDATORY, value ? 1 : 0); }
+        }
+
         private T GetValueFromRegistry<T>(String keyName, T defaultValue = default(T), String opensubKey = REGISTRY_SETTINGS) {
             RegistryKey key = Registry.CurrentUser.OpenSubKey(opensubKey, true);
             return (T)key.GetValue(keyName, defaultValue);
         }
-
+         
         private void SetValueToRegistry<T>(String keyName, T newValue, String opensubKey = REGISTRY_SETTINGS) {
             RegistryKey key = Registry.CurrentUser.OpenSubKey(opensubKey, true);
             key.SetValue(keyName, newValue);

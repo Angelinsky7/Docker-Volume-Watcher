@@ -218,4 +218,7 @@ Would you like to download it and install it ?</value>
   <data name="PollingIntervalLabel" xml:space="preserve">
     <value>Polling interval in millisecond</value>
   </data>
+  <data name="IsIgnoreFileMandatorylLabel" xml:space="preserve">
+    <value>Only watch container that have an ignore file (.dvwignore)</value>
+  </data>
 </root>

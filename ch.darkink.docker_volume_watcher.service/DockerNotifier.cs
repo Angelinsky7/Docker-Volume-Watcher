@@ -26,7 +26,7 @@ namespace ch.darkink.docker_volume_watcher {
 
         private IEnumerable<IgnorePathItem> m_IgnoreRules;
 
-        public DockerNotifier(String container, String hostDirectory, String destination, Action<DockerNotifier> releaseNotifier, EventLog log) {
+        public DockerNotifier(String container, String hostDirectory, String destination, Action<DockerNotifier> releaseNotifier, EventLog log, Boolean ignoreFileMandatory) {
             if (String.IsNullOrEmpty(hostDirectory)) { throw new ArgumentNullException("hostDirectory"); }
             if (String.IsNullOrEmpty(destination)) { throw new ArgumentNullException("destination"); }
 
@@ -36,11 +36,18 @@ namespace ch.darkink.docker_volume_watcher {
             m_ReleaseNotifier = releaseNotifier;
             m_Log = log;
 
-            ComputeIgnoreFile();
-            WatchDirectory();
+            Boolean isIgnorefileExists = ComputeIgnoreFile();
+            Boolean canWatch = !(ignoreFileMandatory && !isIgnorefileExists);
+            if (canWatch) {
+                WatchDirectory();
+            } else {
+                LogMessage($"{container} was ignore because there is no ingore file in {hostDirectory}");
+            }
         }
 
-        private void ComputeIgnoreFile() {
+        private Boolean ComputeIgnoreFile() {
+            Boolean result = true;
+
             if (Directory.Exists(m_HostDirectory)) {
                 m_IgnoreFile = Path.Combine(m_HostDirectory, ".dvwignore");
             }
@@ -78,7 +85,11 @@ namespace ch.darkink.docker_volume_watcher {
                     });
                 }
                 m_IgnoreRules = tests;
+            } else {
+                result = false;
             }
+
+            return result;
         }
 
         private void WatchDirectory() {

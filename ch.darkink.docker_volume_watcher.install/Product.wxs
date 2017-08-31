@@ -90,6 +90,7 @@
           <RegistryValue Name="IsPollEnabled" Type="integer" Value="1" />
           <RegistryValue Name="PollInterval" Type="integer" Value="1000" />
           <RegistryValue Name="CheckUpdateAutomatically" Type="integer" Value="1" />
+          <RegistryValue Name="IngoreFileMandatory" Type="integer" Value="1" />
         </RegistryKey>
       </Component>
 

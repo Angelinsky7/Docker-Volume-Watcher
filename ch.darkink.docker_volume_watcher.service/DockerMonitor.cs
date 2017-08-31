@@ -24,11 +24,13 @@ namespace ch.darkink.docker_volume_watcher {
         private Int32 m_PollingInterval;
         private Int32 m_OldPollingInterval;
         private Int32 m_DockerPollingErrorCount;
+        private Boolean m_IsIgnorefileMandatory;
 
-        public DockerMonitor(EventLog eventLog, Int32 pollingInterval) {
+        public DockerMonitor(EventLog eventLog, Int32 pollingInterval, Boolean isIgnorefileMandatory) {
             m_OldPollingInterval = -1;
             m_Log = eventLog;
             m_PollingInterval = pollingInterval;
+            m_IsIgnorefileMandatory = isIgnorefileMandatory;
             m_ContainerNotifier = new Dictionary<String, IList<DockerNotifier>>();
         }
 
@@ -117,7 +119,7 @@ namespace ch.darkink.docker_volume_watcher {
             foreach (MountPoint mount in container.Mounts) {
                 String hostDirectory = GetHostDirectory(mount.Source);
                 if (!String.IsNullOrEmpty(hostDirectory)) {
-                    r.Add(new DockerNotifier(container.ID, hostDirectory, mount.Destination, (e) => { r.Remove(e); }, m_Log));
+                    r.Add(new DockerNotifier(container.ID, hostDirectory, mount.Destination, (e) => { r.Remove(e); }, m_Log, m_IsIgnorefileMandatory));
                 }
             }
 
