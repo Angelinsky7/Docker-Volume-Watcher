@@ -1,5 +1,5 @@
 # Docker-Volume-Watcher
-Docker volum watcher is a service that creates a link between window file system and docker mounted volume
+Docker volume watcher is a service that creates a link between window file system and docker mounted volume
 
 This is an adaptation of this project : https://github.com/merofeev/docker-windows-volume-watcher but without the need to have python installed.
 

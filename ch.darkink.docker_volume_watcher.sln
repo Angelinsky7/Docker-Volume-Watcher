@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "setup", "setup", "{68D2397F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AC029EA6-FEE9-44E8-B183-F0D18E2D6C45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch.darkink.docker_volume_watcher.updater", "ch.darkink.docker_volume_watcher.updater\ch.darkink.docker_volume_watcher.updater.csproj", "{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,14 @@ Global
 		{68AD14A9-9739-4AB9-A165-06F442AE1CC9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{68AD14A9-9739-4AB9-A165-06F442AE1CC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{68AD14A9-9739-4AB9-A165-06F442AE1CC9}.Release|x86.Build.0 = Release|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Debug|x86.Build.0 = Debug|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Release|x86.ActiveCfg = Release|Any CPU
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +93,7 @@ Global
 		{98946D3C-D796-44C2-90E7-00364AC7D98C} = {AC029EA6-FEE9-44E8-B183-F0D18E2D6C45}
 		{54AC942A-F039-4C35-969A-8F0C8D6FF663} = {68D2397F-5140-480F-B335-B1D0A5CF5F45}
 		{68AD14A9-9739-4AB9-A165-06F442AE1CC9} = {1CC13476-838C-47C7-A4F2-7AAD0319C63D}
+		{83409DB8-F0BB-4AF3-BC71-CB07FB7D2063} = {68D2397F-5140-480F-B335-B1D0A5CF5F45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {47453D22-5928-4078-AF8F-6BDCD609C5F0}

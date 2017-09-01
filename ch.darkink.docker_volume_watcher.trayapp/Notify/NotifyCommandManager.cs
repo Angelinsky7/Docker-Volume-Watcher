@@ -33,6 +33,8 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Notify {
         public static DelegateCommand<UpdateConfigCheck> CheckUpdate { get; private set; }
         public static DelegateCommand Quit { get; private set; }
 
+        //public static DelegateCommand Debug { get; private set; }
+
         static NotifyCommandManager() {
             WireCommands();
         }

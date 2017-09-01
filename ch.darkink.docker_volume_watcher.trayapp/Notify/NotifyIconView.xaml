@@ -16,6 +16,7 @@
                 <MenuItem Header="{lex:Loc CheckUpdatesLabel}" Command="{x:Static notify:NotifyCommandManager.CheckUpdate}" />
                 <Separator />
                 <MenuItem Header="{lex:Loc QuitLabel}" Command="{x:Static notify:NotifyCommandManager.Quit}" />
+                <!--<MenuItem Header="Est" Command="{x:Static notify:NotifyCommandManager.Debug}" />-->
             </ContextMenu>
         </tb:TaskbarIcon.ContextMenu>
     </tb:TaskbarIcon>

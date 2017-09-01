@@ -24,6 +24,19 @@
       <![CDATA[Installed OR WIX_IS_NETFRAMEWORK_462_OR_LATER_INSTALLED]]>
     </Condition>
 
+    <Property Id="REG_ISPOLLENABLED" Value="#1">
+      <RegistrySearch Id="SEARCH_REG_ISPOLLENABLED" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="IsPollEnabled" />
+    </Property>
+    <Property Id="REG_POLLINTERVAL" Value="#1000">
+      <RegistrySearch Id="SEARCH_REG_POLLINTERVAL" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="PollInterval" />
+    </Property>
+    <Property Id="REG_CHECKUPDATEAUTOMATICALLY" Value="#1">
+      <RegistrySearch Id="SEARCH_REG_CHECKUPDATEAUTOMATICALLY" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="CheckUpdateAutomatically" />
+    </Property>
+    <Property Id="REG_INGOREFILEMANDATORY" Value="#1">
+      <RegistrySearch Id="SEARCH_REG_INGOREFILEMANDATORY" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="IngoreFileMandatory" />
+    </Property>
+
     <MajorUpgrade Schedule="afterInstallInitialize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
     <?define EmbedCabOption = yes?>
@@ -57,6 +70,7 @@
         <File Id="AppComponent.exe" Source="$(var.ch.darkink.docker_volume_watcher.service.TargetPath)" Checksum="yes" KeyPath="yes" />
         <File Source="$(var.ch.darkink.docker_volume_watcher.service.TargetPath).config" Checksum="yes" />
         <File Id="AppTray.exe" Source="$(var.ch.darkink.docker_volume_watcher.trayapp.TargetPath)" Checksum="yes" />
+        <File Id="updater.exe" Source="$(var.ch.darkink.docker_volume_watcher.updater.TargetPath)" Checksum="yes" />
 
         <RegistryValue Root="HKLM" Key="SOFTWARE\Darkink\$(var.C_INSTALL)" Name="InstallFolder" Value="[INSTALLFOLDER]" Type="string" />
 
@@ -87,10 +101,10 @@
 
       <Component Id="RegistryEntries" Guid="{2A37131E-4648-4766-91E4-E2956F3444E6}">
         <RegistryKey Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings">
-          <RegistryValue Name="IsPollEnabled" Type="integer" Value="1" />
-          <RegistryValue Name="PollInterval" Type="integer" Value="1000" />
-          <RegistryValue Name="CheckUpdateAutomatically" Type="integer" Value="1" />
-          <RegistryValue Name="IngoreFileMandatory" Type="integer" Value="1" />
+          <RegistryValue Name="IsPollEnabled" Type="string" Action="write" Value="[REG_ISPOLLENABLED]" />
+          <RegistryValue Name="PollInterval" Type="string" Action="write" Value="[REG_POLLINTERVAL]" />
+          <RegistryValue Name="CheckUpdateAutomatically" Action="write" Type="string" Value="[REG_CHECKUPDATEAUTOMATICALLY]" />
+          <RegistryValue Name="IngoreFileMandatory" Action="write" Type="string" Value="[REG_INGOREFILEMANDATORY]" />
         </RegistryKey>
       </Component>
 
@@ -98,7 +112,7 @@
 
     <Property Id="ServiceInstallOnAfterInstall" Value="SERVICE_NAME=$(var.C_NAME);EVENT_LOG_SOURCE=$(var.C_SOURCELOG);EVENT_LOG_NAME=$(var.C_NAMELOG)" />
     <Property Id="ServiceInstallOnAfterUninstall" Value="EVENT_LOG_SOURCE=$(var.C_SOURCELOG);EVENT_LOG_NAME=$(var.C_NAMELOG)" />
-
+   
     <InstallExecuteSequence>
       <Custom Action="ServiceInstallOnAfterInstall" After="StartServices">NOT Installed</Custom>
       <Custom Action="ServiceInstallOnAfterUninstall" Before="DeleteServices">(NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")</Custom>
