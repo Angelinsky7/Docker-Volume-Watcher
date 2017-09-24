@@ -33,6 +33,10 @@ Node - Typescript (for example) project (only some file should be observed)
 Panel to restart the service
 1. Restart the service
 
+## Informations
+You can find informations of what the Service is doing into the Window Event Viewer window.
+Go to "Applications and Services logs" -> "Docker Volume Watcher"
+
 ## .dvwignore file
 if you add a .dvwignore file at the root of the host volume you can now ignore some files
 
