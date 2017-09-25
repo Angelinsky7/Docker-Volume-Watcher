@@ -207,7 +207,7 @@ Would you like to download it and install it ?</value>
     <value>Your version is up to date !</value>
   </data>
   <data name="PropertiesLabel" xml:space="preserve">
-    <value>Propriétés</value>
+    <value>Properties</value>
   </data>
   <data name="ApplyLabel" xml:space="preserve">
     <value>Apply</value>
@@ -220,5 +220,20 @@ Would you like to download it and install it ?</value>
   </data>
   <data name="IsIgnoreFileMandatorylLabel" xml:space="preserve">
     <value>Only watch container that have an ignore file (.dvwignore)</value>
+  </data>
+  <data name="CommandNotifierLabel" xml:space="preserve">
+    <value>Type of the action send to the container</value>
+  </data>
+  <data name="NotifierActionType_FirstBashThenSh" xml:space="preserve">
+    <value>First bash then sh</value>
+  </data>
+  <data name="NotifierActionType_FirstShThenBash" xml:space="preserve">
+    <value>First sh then bash</value>
+  </data>
+  <data name="NotifierActionType_OnlyBash" xml:space="preserve">
+    <value>Only bash</value>
+  </data>
+  <data name="NotifierActionType_OnlySh" xml:space="preserve">
+    <value>Only sh</value>
   </data>
 </root>

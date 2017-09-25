@@ -62,6 +62,14 @@
                                           IsEnabled="{Binding IsPollingEnabled}" />
                             </StackPanel>
 
+                            <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
+                                <Label Content="{lex:Loc CommandNotifierLabel}"  />
+                                <ComboBox Width="200" ItemsSource="{Binding NotifierActionTypes}"
+                                          SelectedValue="{Binding NotifierActionType}"
+                                          SelectedValuePath="Id" DisplayMemberPath="Caption"
+                                          />
+                            </StackPanel>
+
                         </StackPanel>
 
                         <Button Command="{Binding ApplyCommand}" Content="{lex:Loc ApplyLabel}"

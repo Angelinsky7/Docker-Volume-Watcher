@@ -25,12 +25,16 @@ namespace ch.darkink.docker_volume_watcher {
         private Int32 m_OldPollingInterval;
         private Int32 m_DockerPollingErrorCount;
         private Boolean m_IsIgnorefileMandatory;
+        private Int32 m_NotifierAction;
 
-        public DockerMonitor(EventLog eventLog, Int32 pollingInterval, Boolean isIgnorefileMandatory) {
+        public DockerMonitor(EventLog eventLog, Int32 pollingInterval, Boolean isIgnorefileMandatory, Int32 notifierAction) {
             m_OldPollingInterval = -1;
             m_Log = eventLog;
+
             m_PollingInterval = pollingInterval;
             m_IsIgnorefileMandatory = isIgnorefileMandatory;
+            m_NotifierAction = notifierAction;
+
             m_ContainerNotifier = new Dictionary<String, IList<DockerNotifier>>();
         }
 
@@ -56,7 +60,7 @@ namespace ch.darkink.docker_volume_watcher {
             LogMessage("Monitor stopped");
         }
 
-        private void M_Timer_Elapsed(object sender, ElapsedEventArgs e) {
+        private void M_Timer_Elapsed(Object sender, ElapsedEventArgs e) {
             //lock (m_Lock) {
             IList<ContainerListResponse> newContainers = FindContainer();
             if (newContainers != null) {
@@ -119,7 +123,7 @@ namespace ch.darkink.docker_volume_watcher {
             foreach (MountPoint mount in container.Mounts) {
                 String hostDirectory = GetHostDirectory(mount.Source);
                 if (!String.IsNullOrEmpty(hostDirectory)) {
-                    r.Add(new DockerNotifier(container.ID, hostDirectory, mount.Destination, (e) => { r.Remove(e); }, m_Log, m_IsIgnorefileMandatory));
+                    r.Add(new DockerNotifier(container.ID, hostDirectory, mount.Destination, (e) => { r.Remove(e); }, m_Log, m_IsIgnorefileMandatory, m_NotifierAction));
                 }
             }
 

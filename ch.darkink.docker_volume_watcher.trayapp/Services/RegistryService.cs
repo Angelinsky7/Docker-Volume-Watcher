@@ -17,6 +17,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
         private const String REGISTRY_SETTINGS_CHECKUPDATE = "CheckUpdateAutomatically";
         private const String REGISTRY_SETTINGS_POLLINTERVAL = "PollInterval";
         private const String REGISTRY_SETTINGS_IGNOREFILE_MANDATORY = "IngoreFileMandatory";
+        private const String REGISTRY_SETTINGS_NOTIFIER_ACTION_TYPE = "NotifierActionType";
 
         private String AssemblyTitle {
             get {
@@ -54,6 +55,11 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
         public Boolean IsIgnoreFileMandatory {
             get { return GetValueFromRegistry(REGISTRY_SETTINGS_IGNOREFILE_MANDATORY, 0) != 0; }
             set { SetValueToRegistry(REGISTRY_SETTINGS_IGNOREFILE_MANDATORY, value ? 1 : 0); }
+        }
+
+        public Int32 NotifierActionType {
+            get { return GetValueFromRegistry(REGISTRY_SETTINGS_NOTIFIER_ACTION_TYPE, 1); }
+            set { SetValueToRegistry(REGISTRY_SETTINGS_NOTIFIER_ACTION_TYPE, value); }
         }
 
         private T GetValueFromRegistry<T>(String keyName, T defaultValue = default(T), String opensubKey = REGISTRY_SETTINGS) {

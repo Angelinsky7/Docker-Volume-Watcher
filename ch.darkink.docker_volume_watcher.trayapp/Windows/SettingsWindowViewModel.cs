@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ch.darkink.docker_volume_watcher.trayapp.Models;
 
 namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
 
@@ -28,7 +29,9 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
         public Nullable<Boolean> IsServiceRunning { get; private set; }
         public String ServiceState { get; private set; }
         public Boolean IsLoading { get { return IsServiceRunning ?? false; } }
-      
+
+        public IEnumerable<NotifierActionType> NotifierActionTypes { get; private set; }
+       
         public DelegateCommand ApplyCommand { get; private set; }
         public DelegateCommand ResetCommand { get; private set; }
 
@@ -47,6 +50,10 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
             get { return RegistryService?.PollInterval ?? 1000; }
             set { RegistryService.PollInterval = value; }
         }
+        public Int32 NotifierActionType {
+            get { return RegistryService?.NotifierActionType ?? 1; }
+            set { RegistryService.NotifierActionType = value; }
+        }
 
         public Boolean IsIgnoreFileMandatory {
             get { return RegistryService?.IsIgnoreFileMandatory ?? false; }
@@ -54,8 +61,23 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
         }
 
         public SettingsWindowViewModel() {
+            BuildNotifierActionTypes();
+
             //PropertyChanged += SettingsWindowViewModel_PropertyChanged;
             WireCommands();
+        }
+
+        private void BuildNotifierActionTypes() {
+            Task<IEnumerable<NotifierActionType>>.Run(() => {
+                return new List<NotifierActionType> {
+                    new NotifierActionType{Id = 1, Caption = Loc.Get<String>("NotifierActionType_FirstShThenBash")},
+                    new NotifierActionType{Id = 2, Caption = Loc.Get<String>("NotifierActionType_FirstBashThenSh")},
+                    new NotifierActionType{Id = 3, Caption = Loc.Get<String>("NotifierActionType_OnlyBash")},
+                    new NotifierActionType{Id = 4, Caption = Loc.Get<String>("NotifierActionType_OnlySh")},
+                };
+            }).ContinueWith((e) => {
+                NotifierActionTypes = e.Result ?? new List<NotifierActionType>();
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void WireCommands() {

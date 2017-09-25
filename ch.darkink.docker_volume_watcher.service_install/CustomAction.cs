@@ -16,12 +16,12 @@ namespace ch.darkink.docker_volume_watcher.service_install {
 
             #region Constants
 
-            internal const int GENERIC_READ = 0x2008D; //unchecked((int)0x80000000);
-            internal const int SERVICE_START = 0x0010;
-            internal const int SERVICE_STOP = 0x0020;
+            internal const Int32 GENERIC_READ = 0x2008D; //unchecked((int)0x80000000);
+            internal const Int32 SERVICE_START = 0x0010;
+            internal const Int32 SERVICE_STOP = 0x0020;
 
-            internal const int ERROR_INSUFFICIENT_BUFFER = 122;
-            internal const int SECURITY_MAX_SID_SIZE = 68;
+            internal const Int32 ERROR_INSUFFICIENT_BUFFER = 122;
+            internal const Int32 SECURITY_MAX_SID_SIZE = 68;
 
             #endregion
 
@@ -32,10 +32,10 @@ namespace ch.darkink.docker_volume_watcher.service_install {
             #region Methods
 
             [DllImport("advapi32.dll", SetLastError = true)]
-            internal static extern bool QueryServiceObjectSecurity(SafeHandle serviceHandle, System.Security.AccessControl.SecurityInfos secInfo, byte[] lpSecDesrBuf, uint bufSize, out uint bufSizeNeeded);
+            internal static extern Boolean QueryServiceObjectSecurity(SafeHandle serviceHandle, System.Security.AccessControl.SecurityInfos secInfo, Byte[] lpSecDesrBuf, UInt32 bufSize, out UInt32 bufSizeNeeded);
 
             [DllImport("advapi32.dll", SetLastError = true)]
-            internal static extern bool SetServiceObjectSecurity(SafeHandle serviceHandle, System.Security.AccessControl.SecurityInfos secInfos, byte[] lpSecDesrBuf);
+            internal static extern Boolean SetServiceObjectSecurity(SafeHandle serviceHandle, System.Security.AccessControl.SecurityInfos secInfos, Byte[] lpSecDesrBuf);
 
             #endregion
             
@@ -92,19 +92,18 @@ namespace ch.darkink.docker_volume_watcher.service_install {
         }
 
         private static void SetUserAccessServiceDACL(SafeHandle service) {
-            int err = 0;
-            uint neeeded;
+            Int32 err = 0;
 
             //Get the security descriptor
-            byte[] psd = new byte[0];
-            if (!Win32Helper.QueryServiceObjectSecurity(service, SecurityInfos.DiscretionaryAcl, psd, 0, out neeeded)) {
+            Byte[] psd = new Byte[0];
+            if (!Win32Helper.QueryServiceObjectSecurity(service, SecurityInfos.DiscretionaryAcl, psd, 0, out UInt32 neeeded)) {
                 err = Marshal.GetLastWin32Error();
                 if (err != Win32Helper.ERROR_INSUFFICIENT_BUFFER) {
                     throw new InvalidOperationException("Could not query service object security size : " + err);
                 }
 
-                uint size = neeeded;
-                psd = new byte[size];
+                UInt32 size = neeeded;
+                psd = new Byte[size];
                 if (!Win32Helper.QueryServiceObjectSecurity(service, SecurityInfos.DiscretionaryAcl, psd, size, out neeeded)) {
                     throw new InvalidOperationException("Could not allocate security descriptor : " + Marshal.GetLastWin32Error());
                 }
@@ -115,13 +114,13 @@ namespace ch.darkink.docker_volume_watcher.service_install {
             DiscretionaryAcl dacl = new DiscretionaryAcl(false, false, racl);
 
             SecurityIdentifier sid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
-            dacl.AddAccess(AccessControlType.Allow, sid, (int)(Win32Helper.SERVICE_START | Win32Helper.SERVICE_STOP | Win32Helper.GENERIC_READ), InheritanceFlags.None, PropagationFlags.None);
+            dacl.AddAccess(AccessControlType.Allow, sid, (Int32)(Win32Helper.SERVICE_START | Win32Helper.SERVICE_STOP | Win32Helper.GENERIC_READ), InheritanceFlags.None, PropagationFlags.None);
 
-            byte[] rawdacl = new byte[dacl.BinaryLength];
+            Byte[] rawdacl = new Byte[dacl.BinaryLength];
             dacl.GetBinaryForm(rawdacl, 0);
             rsd.DiscretionaryAcl = new RawAcl(rawdacl, 0);
 
-            byte[] rawsd = new byte[rsd.BinaryLength];
+            Byte[] rawsd = new Byte[rsd.BinaryLength];
             rsd.GetBinaryForm(rawsd, 0);
 
             if (!Win32Helper.SetServiceObjectSecurity(service, SecurityInfos.DiscretionaryAcl, rawsd)) {

@@ -69,6 +69,13 @@
       <DependentUpon>DockerVolumeWatcher.cs</DependentUpon>
     </Compile>
     <Compile Include="IgnorePathItem.cs" />
+    <Compile Include="NotifierActionTypes\BaseNotifierActionType.cs" />
+    <Compile Include="NotifierActionTypes\INotifierActionType.cs" />
+    <Compile Include="NotifierActionTypes\FirstShThenBashNotifierActionType.cs" />
+    <Compile Include="NotifierActionTypes\FirstBashThenShNotifierActionType.cs" />
+    <Compile Include="NotifierActionTypes\OnlyShNotifierActionType.cs" />
+    <Compile Include="NotifierActionTypes\OnlyBashNotifierActionType.cs" />
+    <Compile Include="NotifierActionTypes\SwitchNotifierActionType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

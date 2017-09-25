@@ -36,6 +36,9 @@
     <Property Id="REG_INGOREFILEMANDATORY" Value="#1">
       <RegistrySearch Id="SEARCH_REG_INGOREFILEMANDATORY" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="IngoreFileMandatory" />
     </Property>
+    <Property Id="REG_NOTIFIERACTIONTYPE" Value="#1">
+      <RegistrySearch Id="SEARCH_REG_NOTIFIERACTIONTYPE" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="NotifierActionType" />
+    </Property>
 
     <MajorUpgrade Schedule="afterInstallInitialize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
@@ -101,10 +104,11 @@
 
       <Component Id="RegistryEntries" Guid="{2A37131E-4648-4766-91E4-E2956F3444E6}">
         <RegistryKey Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings">
-          <RegistryValue Name="IsPollEnabled" Type="string" Action="write" Value="[REG_ISPOLLENABLED]" />
-          <RegistryValue Name="PollInterval" Type="string" Action="write" Value="[REG_POLLINTERVAL]" />
-          <RegistryValue Name="CheckUpdateAutomatically" Action="write" Type="string" Value="[REG_CHECKUPDATEAUTOMATICALLY]" />
-          <RegistryValue Name="IngoreFileMandatory" Action="write" Type="string" Value="[REG_INGOREFILEMANDATORY]" />
+          <RegistryValue Name="IsPollEnabled"             Action="write" Type="string" Value="[REG_ISPOLLENABLED]" />
+          <RegistryValue Name="PollInterval"              Action="write" Type="string" Value="[REG_POLLINTERVAL]" />
+          <RegistryValue Name="CheckUpdateAutomatically"  Action="write" Type="string" Value="[REG_CHECKUPDATEAUTOMATICALLY]" />
+          <RegistryValue Name="IngoreFileMandatory"       Action="write" Type="string" Value="[REG_INGOREFILEMANDATORY]" />
+          <RegistryValue Name="NotifierActionType"        Action="write" Type="string" Value="[REG_NOTIFIERACTIONTYPE]" />
         </RegistryKey>
       </Component>
 
@@ -112,7 +116,7 @@
 
     <Property Id="ServiceInstallOnAfterInstall" Value="SERVICE_NAME=$(var.C_NAME);EVENT_LOG_SOURCE=$(var.C_SOURCELOG);EVENT_LOG_NAME=$(var.C_NAMELOG)" />
     <Property Id="ServiceInstallOnAfterUninstall" Value="EVENT_LOG_SOURCE=$(var.C_SOURCELOG);EVENT_LOG_NAME=$(var.C_NAMELOG)" />
-   
+
     <InstallExecuteSequence>
       <Custom Action="ServiceInstallOnAfterInstall" After="StartServices">NOT Installed</Custom>
       <Custom Action="ServiceInstallOnAfterUninstall" Before="DeleteServices">(NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")</Custom>

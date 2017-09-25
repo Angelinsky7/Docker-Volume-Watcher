@@ -116,6 +116,15 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type of the action send to the container.
+        /// </summary>
+        internal static string CommandNotifierLabel {
+            get {
+                return ResourceManager.GetString("CommandNotifierLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         internal static string GeneralLabel {
@@ -181,6 +190,42 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First bash then sh.
+        /// </summary>
+        internal static string NotifierActionType_FirstBashThenSh {
+            get {
+                return ResourceManager.GetString("NotifierActionType_FirstBashThenSh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First sh then bash.
+        /// </summary>
+        internal static string NotifierActionType_FirstShThenBash {
+            get {
+                return ResourceManager.GetString("NotifierActionType_FirstShThenBash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only bash.
+        /// </summary>
+        internal static string NotifierActionType_OnlyBash {
+            get {
+                return ResourceManager.GetString("NotifierActionType_OnlyBash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only sh.
+        /// </summary>
+        internal static string NotifierActionType_OnlySh {
+            get {
+                return ResourceManager.GetString("NotifierActionType_OnlySh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Polling interval in millisecond.
         /// </summary>
         internal static string PollingIntervalLabel {
@@ -190,7 +235,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Propriétés.
+        ///   Looks up a localized string similar to Properties.
         /// </summary>
         internal static string PropertiesLabel {
             get {
