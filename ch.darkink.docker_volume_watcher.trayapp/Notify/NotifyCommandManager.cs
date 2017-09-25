@@ -47,16 +47,17 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Notify {
         }
 
         private static void OnQuit() {
-            TaskTrayService.Notify.StartReverse();
-
-            Task.Run(() => {
-                ServiceLocator.Current.GetInstance<ServiceMonitor>().Stop();
-                ServiceLocator.Current.GetInstance<ServiceMonitor>().Release();
-            }).ContinueWith((f) => {
-                ServiceLocator.Current.GetInstance<NotifyIconViewModel>().ShowBalloonTip(Loc.Get<String>("TitleLabel"), Loc.Get<String>("ServiceStoppedLabel"), BalloonIcon.Info);
-                TaskTrayService.Dispose();
-                Application.Current.Shutdown();
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            Application.Current.Dispatcher.Invoke(new Action(() => {
+                try {
+                    TaskTrayService.Notify.StartReverse();
+                    ServiceLocator.Current.GetInstance<ServiceMonitor>().Stop();
+                    ServiceLocator.Current.GetInstance<ServiceMonitor>().Release();
+                    ServiceLocator.Current.GetInstance<NotifyIconViewModel>().ShowBalloonTip(Loc.Get<String>("TitleLabel"), Loc.Get<String>("ServiceStoppedLabel"), BalloonIcon.Info);
+                    TaskTrayService.Dispose();
+                } finally {
+                    Application.Current.Shutdown();
+                }
+            }));
         }
 
         private static void OnAbout() {
