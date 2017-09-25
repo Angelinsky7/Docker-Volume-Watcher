@@ -88,7 +88,8 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
             if (Status != true) {
                 m_ServiceMonitor.Start(new String[] {
                     RegistryService.PollInterval.ToString(),
-                    RegistryService.IsIgnoreFileMandatory.ToString()
+                    RegistryService.IsIgnoreFileMandatory.ToString(),
+                    RegistryService.NotifierActionType.ToString()
                 });
                 Operation = ServiceMonitorOperation.Starting;
                 try {
