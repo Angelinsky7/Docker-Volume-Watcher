@@ -20,7 +20,7 @@ Panel to configure general options
 1. Start at login
 2. Check upate
 
-### Properties (oups)
+### Properties
 Panel to configure service properties
 1. Polling interval of the Docker Volume Watcher for the conainters to the Docker service in millisecond
 2. Only watch containers that have a dvwingore file at the root of the source path. Like that it can protect from slowing down containers that you don't need to observe.
@@ -28,6 +28,7 @@ For example, if you use docker-compose to build you environment and have multipl
 Apache - Frontend (no need to listen to file changes there)
 Mysql - Database (no need to listen to file changes there)
 Node - Typescript (for example) project (only some file should be observed)
+3. Type of shell (and how) used by the notifier (sh first then bash, bash first then sh, only bash, only sh)
 
 ### Reset
 Panel to restart the service
