@@ -236,4 +236,7 @@ Would you like to download it and install it ?</value>
   <data name="NotifierActionType_OnlySh" xml:space="preserve">
     <value>Only sh</value>
   </data>
+  <data name="DockerEndpointLabel" xml:space="preserve">
+    <value>Docker endpoint URI</value>
+  </data>
 </root>

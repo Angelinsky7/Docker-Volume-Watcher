@@ -54,6 +54,10 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Windows {
             get { return RegistryService?.NotifierActionType ?? 1; }
             set { RegistryService.NotifierActionType = value; }
         }
+        public String DockerEndpoint {
+            get { return RegistryService?.DockerEndpoint ?? "npipe://./pipe/docker_engine"; }
+            set { RegistryService.DockerEndpoint = value; }
+        }
 
         public Boolean IsIgnoreFileMandatory {
             get { return RegistryService?.IsIgnoreFileMandatory ?? false; }

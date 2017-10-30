@@ -12,9 +12,9 @@ namespace ch.darkink.docker_volume_watcher.test {
             Console.WriteLine("Start");
 
             DockerMonitor monitor = null;
-          
+
             try {
-                monitor = new DockerMonitor(null, 500, true, 1);
+                monitor = new DockerMonitor(null, 500, true, 1, "npipe://./pipe/docker_engine");
                 monitor.Start();
             } catch (Exception ex) {
                 Console.WriteLine(ex.Message);
@@ -22,7 +22,7 @@ namespace ch.darkink.docker_volume_watcher.test {
 
             Console.ReadLine();
 
-            if(monitor != null) {
+            if (monitor != null) {
                 monitor.Stop();
                 monitor = null;
             }

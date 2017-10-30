@@ -26,14 +26,18 @@ namespace ch.darkink.docker_volume_watcher {
         private Int32 m_DockerPollingErrorCount;
         private Boolean m_IsIgnorefileMandatory;
         private Int32 m_NotifierAction;
+        private String m_DockerEndpoint;
 
-        public DockerMonitor(EventLog eventLog, Int32 pollingInterval, Boolean isIgnorefileMandatory, Int32 notifierAction) {
+        private Boolean m_FirstConnection;
+
+        public DockerMonitor(EventLog eventLog, Int32 pollingInterval, Boolean isIgnorefileMandatory, Int32 notifierAction, String dockerEndpoint) {
             m_OldPollingInterval = -1;
             m_Log = eventLog;
 
             m_PollingInterval = pollingInterval;
             m_IsIgnorefileMandatory = isIgnorefileMandatory;
             m_NotifierAction = notifierAction;
+            m_DockerEndpoint = dockerEndpoint;
 
             m_ContainerNotifier = new Dictionary<String, IList<DockerNotifier>>();
         }
@@ -44,6 +48,7 @@ namespace ch.darkink.docker_volume_watcher {
                 AutoReset = true,
                 Enabled = false
             };
+            m_FirstConnection = true;
             m_Timer.Elapsed += M_Timer_Elapsed;
             m_Timer.Start();
             LogMessage("Monitor started");
@@ -103,19 +108,32 @@ namespace ch.darkink.docker_volume_watcher {
         }
 
         private IList<ContainerListResponse> FindContainer() {
-            using (DockerClient client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient()) {
-                IList<ContainerListResponse> r = null;
-                try {
-                    r = client.Containers.ListContainersAsync(
-                        new ContainersListParameters { All = true }
-                    ).Result;
-                    m_DockerPollingErrorCount = 0;
-                } catch (Exception ex) {
-                    m_DockerPollingErrorCount++;
-                    LogMessage($"Cannot connect to docker deamon: {ex.InnerException.Message ?? ex.Message}", EventLogEntryType.Error);
+            IList<ContainerListResponse> r = null;
+
+            try {
+                using (DockerClient client = new DockerClientConfiguration(new Uri(m_DockerEndpoint)).CreateClient()) {
+                    if (m_FirstConnection) {
+                        VersionResponse version = client.Miscellaneous.GetVersionAsync().Result;
+                        LogMessage($"Connected to {version.Version}, api : {version.APIVersion}, arch: {version.Arch}, build: {version.BuildTime}, os: {version.Os}");
+                        m_FirstConnection = false;
+                    }
+
+                    try {
+                        r = client.Containers.ListContainersAsync(
+                            new ContainersListParameters { All = true }
+                        ).Result;
+                        m_DockerPollingErrorCount = 0;
+                    } catch (Exception ex) {
+                        m_DockerPollingErrorCount++;
+                        LogMessage($"Cannot connect to docker deamon: {ex.InnerException?.Message ?? ex.Message}", EventLogEntryType.Error);
+                    }
                 }
-                return r;
+            } catch (Exception ex) {
+                m_DockerPollingErrorCount++;
+                LogMessage($"Cannot connect to docker deamon: {ex.InnerException?.Message ?? ex.Message}", EventLogEntryType.Error);
             }
+
+            return r;
         }
 
         private IList<DockerNotifier> WatchContainer(ContainerListResponse container) {

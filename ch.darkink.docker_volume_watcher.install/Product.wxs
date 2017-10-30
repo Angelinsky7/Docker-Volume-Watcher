@@ -39,6 +39,9 @@
     <Property Id="REG_NOTIFIERACTIONTYPE" Value="#1">
       <RegistrySearch Id="SEARCH_REG_NOTIFIERACTIONTYPE" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="NotifierActionType" />
     </Property>
+    <Property Id="REG_DOCKERENDPOINT" Value="npipe://./pipe/docker_engine">
+      <RegistrySearch Id="SEARCH_REG_DOCKERENDPOINT" Type="raw" Root="HKCU" Key="Software\Darkink\$(var.C_INSTALL)\Settings" Name="DockerEndpoint" />
+    </Property>
 
     <MajorUpgrade Schedule="afterInstallInitialize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
@@ -109,6 +112,7 @@
           <RegistryValue Name="CheckUpdateAutomatically"  Action="write" Type="string" Value="[REG_CHECKUPDATEAUTOMATICALLY]" />
           <RegistryValue Name="IngoreFileMandatory"       Action="write" Type="string" Value="[REG_INGOREFILEMANDATORY]" />
           <RegistryValue Name="NotifierActionType"        Action="write" Type="string" Value="[REG_NOTIFIERACTIONTYPE]" />
+          <RegistryValue Name="DockerEndpoint"            Action="write" Type="string" Value="[REG_DOCKERENDPOINT]" />
         </RegistryKey>
       </Component>
 

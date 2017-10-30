@@ -18,6 +18,7 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
         private const String REGISTRY_SETTINGS_POLLINTERVAL = "PollInterval";
         private const String REGISTRY_SETTINGS_IGNOREFILE_MANDATORY = "IngoreFileMandatory";
         private const String REGISTRY_SETTINGS_NOTIFIER_ACTION_TYPE = "NotifierActionType";
+        private const String REGISTRY_SETTINGS_DOCKER_ENDPOINT = "DockerEndpoint";
 
         private String AssemblyTitle {
             get {
@@ -60,6 +61,11 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Services {
         public Int32 NotifierActionType {
             get { return GetValueFromRegistry(REGISTRY_SETTINGS_NOTIFIER_ACTION_TYPE, 1); }
             set { SetValueToRegistry(REGISTRY_SETTINGS_NOTIFIER_ACTION_TYPE, value); }
+        }
+
+        public String DockerEndpoint {
+            get { return GetValueFromRegistry(REGISTRY_SETTINGS_DOCKER_ENDPOINT, "npipe://./pipe/docker_engine"); }
+            set { SetValueToRegistry(REGISTRY_SETTINGS_DOCKER_ENDPOINT, value); }
         }
 
         private T GetValueFromRegistry<T>(String keyName, T defaultValue = default(T), String opensubKey = REGISTRY_SETTINGS) {

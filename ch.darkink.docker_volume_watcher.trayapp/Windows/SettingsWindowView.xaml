@@ -50,24 +50,31 @@
                             <TextBlock Text="{lex:Loc PropertiesLabel}" FontSize="22" FontWeight="Bold" />
 
                             <!--<CheckBox IsChecked="{Binding IsPollingEnabled}" Margin="10,30,0,0" Content="{lex:Loc IsPollingEnabledLabel}" />-->
+                            
                             <StackPanel Orientation="Horizontal" Margin="10,30,0,0">
                                 <Label Content="{lex:Loc PollingIntervalLabel}" />
-                                <TextBox Text="{Binding PollingInterval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="10,0,0,0" Width="100" IsEnabled="{Binding IsPollingEnabled}" />
+                                <TextBox Text="{Binding PollingInterval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         VerticalContentAlignment="Center" Margin="10,0,0,0" Width="100" />
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
                                 <CheckBox IsChecked="{Binding IsIgnoreFileMandatory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                           Content="{lex:Loc IsIgnoreFileMandatorylLabel}"
-                                          VerticalContentAlignment="Center"
-                                          IsEnabled="{Binding IsPollingEnabled}" />
+                                          VerticalContentAlignment="Center" />
+                                <!--IsEnabled="{Binding IsPollingEnabled}"-->
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
                                 <Label Content="{lex:Loc CommandNotifierLabel}"  />
                                 <ComboBox Width="200" ItemsSource="{Binding NotifierActionTypes}"
                                           SelectedValue="{Binding NotifierActionType}"
-                                          SelectedValuePath="Id" DisplayMemberPath="Caption"
-                                          />
+                                          SelectedValuePath="Id" DisplayMemberPath="Caption" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
+                                <Label Content="{lex:Loc DockerEndpointLabel}" />
+                                <TextBox Text="{Binding DockerEndpoint, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         VerticalContentAlignment="Center" Margin="10,0,0,0" Width="200" />
                             </StackPanel>
 
                         </StackPanel>

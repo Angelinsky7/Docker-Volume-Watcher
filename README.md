@@ -29,6 +29,7 @@ Apache - Frontend (no need to listen to file changes there)
 Mysql - Database (no need to listen to file changes there)
 Node - Typescript (for example) project (only some file should be observed)
 3. Type of shell (and how) used by the notifier (sh first then bash, bash first then sh, only bash, only sh)
+4. Docker endpoint (by default: "npipe://./pipe/docker_engine")
 
 ### Reset
 Panel to restart the service

@@ -125,6 +125,15 @@ namespace ch.darkink.docker_volume_watcher.trayapp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Docker endpoint URI.
+        /// </summary>
+        internal static string DockerEndpointLabel {
+            get {
+                return ResourceManager.GetString("DockerEndpointLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         internal static string GeneralLabel {

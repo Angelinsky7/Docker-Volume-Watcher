@@ -14,7 +14,7 @@ namespace ch.darkink.docker_volume_watcher.service.NotifierActionTypes {
 
         protected String m_Shell;
         protected String m_ShellOptions = "-c";
-        protected String m_ShellCommand = "chmod $(stat - c % a {0}) {0}";
+        protected String m_ShellCommand = "chmod $(stat -c %a {0}) {0}";
         protected Boolean m_HandleError;
 
         public BaseNotifierActionType(DockerNotifier notifier) {
