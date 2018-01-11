@@ -16,7 +16,7 @@ namespace ch.darkink.docker_volume_watcher {
         public const String CONTAINER_STATE_RUNNING = "running";
         public const String MOUNT_POINT_MODE_BIND = "bind";
 
-        private static readonly Regex m_SourceToHostPath = new Regex("^/([a-zA-Z])/(.*)$", RegexOptions.Compiled);
+        private static readonly Regex m_SourceToHostPath = new Regex("^(?:/host_mnt)?/([a-zA-Z])/(.*)$", RegexOptions.Compiled);
         private Dictionary<String, IList<DockerNotifier>> m_ContainerNotifier;
         private Timer m_Timer;
         //private static readonly Object m_Lock = new Object();
